@@ -37,6 +37,8 @@ declare -a VERSIONS=(
   1.14.4-R0.1-SNAPSHOT
   1.15-R0.1-SNAPSHOT
   1.15.1-R0.1-SNAPSHOT
+  1.16.1-R0.1-SNAPSHOT
+  1.16.2-R0.1-SNAPSHOT
 )
 
 mkdir -p "$SCRIPT_DIR/lib"
@@ -103,6 +105,8 @@ for MOD in "${LEGACY_MODULES[@]}"; do
     echo "  Installing $MOD ..."
     cd "$SCRIPT_DIR/$MOD"
     mvn clean install -DskipTests -q
+  else
+    echo "  [WARN] Module directory $MOD not found (skipped)" >&2
   fi
 done
 

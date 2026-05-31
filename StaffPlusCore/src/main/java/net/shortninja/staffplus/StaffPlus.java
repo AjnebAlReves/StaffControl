@@ -51,6 +51,7 @@ import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.logging.Filter;
@@ -229,13 +230,13 @@ public class StaffPlus extends JavaPlugin implements IStaffPlus {
         try {
             ServiceLoader<IProtocolProvider> loader = ServiceLoader.load(IProtocolProvider.class);
             for (IProtocolProvider provider : loader) {
-                if (provider.getVersion().equals(formattedVersion)) {
+                if (provider.supports(formattedVersion)) {
                     versionProtocol = provider.create(this);
                     break;
                 }
             }
-        } catch (Exception e) {
-            // fall through
+        } catch (Exception | ServiceConfigurationError e) {
+            // fall through to reflection fallback
         }
 
         // Attempt 2: Reflection fallback (version-specific package, then v1_1x)
