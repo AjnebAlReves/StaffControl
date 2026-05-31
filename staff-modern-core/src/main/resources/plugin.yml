@@ -1,0 +1,8 @@
+name: StaffControl
+version: 1.0.0
+main: xyz.bt31.staffcontrol.core.StaffControlPlugin
+api-version: 1.17
+load: POSTWORLD
+author: ByAlReves
+description: Staff management plugin for modern Minecraft servers (1.17+)
+softdepend: [PlaceholderAPI]
