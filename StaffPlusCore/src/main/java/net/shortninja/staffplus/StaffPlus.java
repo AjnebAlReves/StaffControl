@@ -243,11 +243,11 @@ public class StaffPlus extends JavaPlugin implements IStaffPlus {
             resolvedBy = "reflection";
             try {
                 versionProtocol = loadProtocol(formattedVersion, formattedVersion);
-            } catch (ReflectiveOperationException e1) {
+            } catch (ReflectiveOperationException | LinkageError e1) {
                 try {
                     resolvedBy = "reflection (v1_1x fallback)";
                     versionProtocol = loadProtocol("v1_1x", formattedVersion);
-                } catch (ReflectiveOperationException e2) {
+                } catch (ReflectiveOperationException | LinkageError e2) {
                     return false;
                 }
             }

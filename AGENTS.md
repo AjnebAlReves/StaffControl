@@ -51,12 +51,10 @@ No Java source changes needed. Only:
 
 ### For 1.17+ (NMS-free via capability system):
 
-Copy the `v1_17_plus` module and update:
-1. Copy `v1_17_plus` → `v1_18_plus`
-2. Update `ProtocolProvider_{version}` version string (e.g. `v1_18_R1`)
-3. Add module to parent `pom.xml` and `StaffPlusCore/pom.xml`
-4. Override `maven.compiler.source/target` to Java 16+ (in module POM)
-5. Capability implementations need no changes — they use pure Bukkit/Spigot API
+**No new modules needed.** The `v1_17_plus` module handles ALL 1.17+ versions. When a new Minecraft version releases:
+1. Update the version string in `ProtocolProvider_v1_17_R1.getVersion()` (e.g. change `"v1_17_R1"` to `"v1_18_R1"`)
+2. Optionally rename `Protocol_v1_17_R1` → `Protocol_v1_18_R1` if the class name must match the version string
+3. Capability implementations need no changes — they use pure Bukkit/Spigot API
 
 At runtime, `StaffPlus.java` tries `ServiceLoader<IProtocolProvider>` first (matching by version string), then falls back to reflection on the Bukkit package name (`v1_17_R1`). No switch statement or import to update.
 
