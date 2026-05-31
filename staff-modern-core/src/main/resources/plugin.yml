@@ -31,7 +31,7 @@ commands:
     description: Staff management commands
     aliases: [staffmode, staffchat]
     permission: staffcontrol.staff
-    usage: /<command> <reload|chat>
+    usage: /<command> <reload|chat|mode>
 
 permissions:
   staffcontrol.*:

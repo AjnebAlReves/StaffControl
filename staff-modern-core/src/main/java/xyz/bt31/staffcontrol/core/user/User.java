@@ -13,6 +13,7 @@ public class User implements IUser {
     private short glassColor = 0;
     private boolean frozen = false;
     private boolean chatting = false;
+    private boolean staffMode = false;
     private boolean online = true;
     private IGui currentGui;
     private IAction queuedAction;
@@ -139,6 +140,14 @@ public class User implements IUser {
     @Override
     public void setChatting(boolean b) {
         this.chatting = b;
+    }
+
+    public boolean isStaffMode() {
+        return staffMode;
+    }
+
+    public void setStaffMode(boolean staffMode) {
+        this.staffMode = staffMode;
     }
 
     @Override

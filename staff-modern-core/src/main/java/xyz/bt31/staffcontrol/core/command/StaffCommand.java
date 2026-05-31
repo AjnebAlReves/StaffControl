@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.bt31.staffcontrol.core.StaffControl;
 import xyz.bt31.staffcontrol.core.lang.Lang;
+import xyz.bt31.staffcontrol.core.staffmode.StaffModeManager;
 import xyz.bt31.staffcontrol.core.user.User;
 
 import java.util.List;
@@ -22,8 +23,9 @@ public class StaffCommand extends Command {
         }
 
         if (args.length == 0) {
-            lang.sendWithPrefix(sender, "invalid-usage",
-                Lang.usage("/staff <reload|chat>"));
+            Player player = checkPlayer(sender);
+            if (player == null) return true;
+            staffControl.getStaffModeManager().toggle(player);
             return true;
         }
 
@@ -32,6 +34,7 @@ public class StaffCommand extends Command {
                 if (!checkPermission(sender, "staffcontrol.reload")) return true;
                 staffControl.getPlugin().reloadConfig();
                 staffControl.reloadLang();
+                staffControl.getStaffModeManager().reload();
                 staffControl.getLang().sendWithPrefix(sender, "reload-complete");
             }
             case "chat" -> {
@@ -46,8 +49,13 @@ public class StaffCommand extends Command {
                     lang.sendWithPrefix(sender, "staff-chat-toggled-off");
                 }
             }
+            case "mode" -> {
+                Player player = checkPlayer(sender);
+                if (player == null) return true;
+                staffControl.getStaffModeManager().toggle(player);
+            }
             default -> lang.sendWithPrefix(sender, "invalid-usage",
-                Lang.usage("/staff <reload|chat>"));
+                Lang.usage("/staff <reload|chat|mode>"));
         }
 
         return true;
@@ -58,7 +66,7 @@ public class StaffCommand extends Command {
                                        String alias, String[] args) {
         if (args.length == 1) {
             String prefix = args[0].toLowerCase();
-            return List.of("reload", "chat").stream()
+            return List.of("reload", "chat", "mode").stream()
                 .filter(s -> s.startsWith(prefix))
                 .toList();
         }

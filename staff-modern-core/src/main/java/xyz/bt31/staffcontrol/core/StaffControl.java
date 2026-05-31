@@ -4,6 +4,8 @@ import xyz.bt31.staffcontrol.api.IOptions;
 import xyz.bt31.staffcontrol.api.IStaffControl;
 import xyz.bt31.staffcontrol.api.util.IPermissionsHandler;
 import xyz.bt31.staffcontrol.core.lang.Lang;
+import xyz.bt31.staffcontrol.core.staffmode.InspectGui;
+import xyz.bt31.staffcontrol.core.staffmode.StaffModeManager;
 import xyz.bt31.staffcontrol.core.storage.DatabaseManager;
 import xyz.bt31.staffcontrol.core.storage.ReportStorage;
 import xyz.bt31.staffcontrol.core.storage.WarningStorage;
@@ -17,6 +19,8 @@ public class StaffControl implements IStaffControl {
     private final DatabaseManager database;
     private final ReportStorage reportStorage;
     private final WarningStorage warningStorage;
+    private final StaffModeManager staffModeManager;
+    private final InspectGui inspectGui;
     private Lang lang;
 
     public StaffControl(StaffControlPlugin plugin) {
@@ -27,6 +31,8 @@ public class StaffControl implements IStaffControl {
         this.database = new DatabaseManager(plugin.getLogger(), options, plugin.getDataFolder());
         this.reportStorage = new ReportStorage(database, plugin.getLogger());
         this.warningStorage = new WarningStorage(database, plugin.getLogger());
+        this.staffModeManager = new StaffModeManager(this);
+        this.inspectGui = new InspectGui(this);
         this.lang = new Lang(this);
         initStorage();
     }
@@ -69,6 +75,14 @@ public class StaffControl implements IStaffControl {
 
     public WarningStorage getWarningStorage() {
         return warningStorage;
+    }
+
+    public StaffModeManager getStaffModeManager() {
+        return staffModeManager;
+    }
+
+    public InspectGui getInspectGui() {
+        return inspectGui;
     }
 
     public void reloadLang() {

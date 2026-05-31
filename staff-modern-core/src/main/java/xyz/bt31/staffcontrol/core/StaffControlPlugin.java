@@ -7,6 +7,7 @@ import xyz.bt31.staffcontrol.core.listener.FreezeLoginListener;
 import xyz.bt31.staffcontrol.core.listener.PlayerJoinListener;
 import xyz.bt31.staffcontrol.core.listener.PlayerQuitListener;
 import xyz.bt31.staffcontrol.core.listener.StaffChatListener;
+import xyz.bt31.staffcontrol.core.staffmode.StaffModeListener;
 
 public class StaffControlPlugin extends JavaPlugin {
 
@@ -67,6 +68,8 @@ public class StaffControlPlugin extends JavaPlugin {
             new FreezeLoginListener(instance), this);
         getServer().getPluginManager().registerEvents(
             new StaffChatListener(instance), this);
+        getServer().getPluginManager().registerEvents(
+            new StaffModeListener(instance, instance.getStaffModeManager()), this);
     }
 
     public static StaffControl get() {

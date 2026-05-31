@@ -27,8 +27,8 @@ staff-chat-format: "<dark_gray>[<gold>Staff</gold>] <player><gray>: </gray><mess
 staff-chat-toggled-on: "<green>Staff chat enabled.</green>"
 staff-chat-toggled-off: "<red>Staff chat disabled.</red>"
 
-staff-mode-enabled: "<green>Staff mode enabled.</green>"
-staff-mode-disabled: "<red>Staff mode disabled.</red>"
+staff-mode-enabled: "<green>Staff mode <bold>enabled</bold>.</green>"
+staff-mode-disabled: "<red>Staff mode <bold>disabled</bold>.</red>"
 
 user-not-found: "<red>Player <target> not found.</red>"
 user-offline: "<red><target> is offline.</red>"
