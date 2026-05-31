@@ -55,6 +55,10 @@ public class StaffControlPlugin extends JavaPlugin {
         Command staff = new StaffCommand(instance);
         getCommand("staff").setExecutor(staff);
         getCommand("staff").setTabCompleter(staff);
+
+        Command ticket = new TicketCommand(instance);
+        getCommand("ticket").setExecutor(ticket);
+        getCommand("ticket").setTabCompleter(ticket);
     }
 
     private void registerListeners() {

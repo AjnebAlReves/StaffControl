@@ -124,4 +124,8 @@ public class Lang {
     public static TagResolver message(String message) {
         return Placeholder.unparsed("message", message);
     }
+
+    public static TagResolver unparsed(String key, String value) {
+        return Placeholder.unparsed(key, value);
+    }
 }

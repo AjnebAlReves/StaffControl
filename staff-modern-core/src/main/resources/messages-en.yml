@@ -34,3 +34,14 @@ user-not-found: "<red>Player <target> not found.</red>"
 user-offline: "<red><target> is offline.</red>"
 
 reload-complete: "<green>Configuration reloaded.</green>"
+
+# Tickets
+ticket-submitted: "<green>Ticket <bold>#<id></bold> submitted.</green>"
+ticket-opened: "<gold>New ticket #<id> from <target></gold><newline><gray><reason></gray>"
+ticket-response-staff: "<green>Response sent to <target> for ticket #<id>.</green>"
+ticket-response-user: "<gold>Staff <staff> responded to ticket #<id></gold><newline><gray><reason></gray>"
+ticket-closed: "<red>Ticket #<id> closed.</red><newline><gray>Reason: <reason></gray>"
+ticket-removed: "<red>Ticket #<id> (<target>) removed.</red><newline><gray>Reason: <reason></gray>"
+ticket-not-found: "<red>Ticket for <target> not found.</red>"
+ticket-list-entry: "<gray>#<id></gray> <target><gray>: </gray><reason>"
+ticket-list-empty: "<gray>No open tickets.</gray>"

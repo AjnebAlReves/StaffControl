@@ -24,6 +24,8 @@ public class Options implements IOptions {
     private final boolean alertMention;
     private final boolean alertNameChange;
     private final List<String> soundNames;
+    private final boolean ticketsEnabled;
+    private final boolean ticketsKeepOpen;
 
     public Options(FileConfiguration config) {
         this.config = config;
@@ -43,6 +45,8 @@ public class Options implements IOptions {
         alertMention = config.getBoolean("alerts.mention", true);
         alertNameChange = config.getBoolean("alerts.name-change", true);
         soundNames = config.getStringList("sounds");
+        ticketsEnabled = config.getBoolean("tickets.enabled", true);
+        ticketsKeepOpen = config.getBoolean("tickets.keep-open", false);
     }
 
     public String getStorageType() {
@@ -95,5 +99,13 @@ public class Options implements IOptions {
 
     public List<String> getSoundNames() {
         return soundNames;
+    }
+
+    public boolean isTicketsEnabled() {
+        return ticketsEnabled;
+    }
+
+    public boolean isTicketsKeepOpen() {
+        return ticketsKeepOpen;
     }
 }

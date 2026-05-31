@@ -21,6 +21,10 @@ alerts:
 
 sounds: []
 
+tickets:
+  enabled: true
+  keep-open: false
+
 staff-mode:
   items:
     compass:

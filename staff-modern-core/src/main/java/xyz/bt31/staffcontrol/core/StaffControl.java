@@ -8,6 +8,7 @@ import xyz.bt31.staffcontrol.core.staffmode.InspectGui;
 import xyz.bt31.staffcontrol.core.staffmode.StaffModeManager;
 import xyz.bt31.staffcontrol.core.storage.DatabaseManager;
 import xyz.bt31.staffcontrol.core.storage.ReportStorage;
+import xyz.bt31.staffcontrol.core.storage.TicketStorage;
 import xyz.bt31.staffcontrol.core.storage.WarningStorage;
 
 public class StaffControl implements IStaffControl {
@@ -19,6 +20,7 @@ public class StaffControl implements IStaffControl {
     private final DatabaseManager database;
     private final ReportStorage reportStorage;
     private final WarningStorage warningStorage;
+    private final TicketStorage ticketStorage;
     private final StaffModeManager staffModeManager;
     private final InspectGui inspectGui;
     private Lang lang;
@@ -31,6 +33,7 @@ public class StaffControl implements IStaffControl {
         this.database = new DatabaseManager(plugin.getLogger(), options, plugin.getDataFolder());
         this.reportStorage = new ReportStorage(database, plugin.getLogger());
         this.warningStorage = new WarningStorage(database, plugin.getLogger());
+        this.ticketStorage = new TicketStorage(database, plugin.getLogger());
         this.staffModeManager = new StaffModeManager(this);
         this.inspectGui = new InspectGui(this);
         this.lang = new Lang(this);
@@ -40,6 +43,7 @@ public class StaffControl implements IStaffControl {
     private void initStorage() {
         reportStorage.init();
         warningStorage.init();
+        ticketStorage.init();
     }
 
     @Override
@@ -75,6 +79,10 @@ public class StaffControl implements IStaffControl {
 
     public WarningStorage getWarningStorage() {
         return warningStorage;
+    }
+
+    public TicketStorage getTicketStorage() {
+        return ticketStorage;
     }
 
     public StaffModeManager getStaffModeManager() {

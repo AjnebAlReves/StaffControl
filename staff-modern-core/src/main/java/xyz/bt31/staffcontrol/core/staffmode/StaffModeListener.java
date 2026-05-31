@@ -66,5 +66,8 @@ public class StaffModeListener implements Listener {
             user.setStaffMode(false);
         }
         user.setChatting(false);
+
+        TicketHandler ticketHandler = new TicketHandler(staffControl);
+        ticketHandler.closeTicketOnQuit(player.getUniqueId());
     }
 }

@@ -32,6 +32,11 @@ commands:
     aliases: [staffmode, staffchat]
     permission: staffcontrol.staff
     usage: /<command> <reload|chat|mode>
+  ticket:
+    description: Create or manage tickets
+    aliases: [support, helpop]
+    permission: staffcontrol.tickets
+    usage: /<command> <message>
 
 permissions:
   staffcontrol.*:
@@ -46,6 +51,7 @@ permissions:
       staffcontrol.reload: true
       staffcontrol.alerts: true
       staffcontrol.reports.receive: true
+      staffcontrol.tickets: true
   staffcontrol.vanish:
     description: Allows using /vanish
     default: op
@@ -70,3 +76,6 @@ permissions:
   staffcontrol.reports.receive:
     description: Receive report notifications
     default: op
+  staffcontrol.tickets:
+    description: Use the ticket system
+    default: true
