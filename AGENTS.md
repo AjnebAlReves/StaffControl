@@ -1,114 +1,150 @@
 # StaffPlus / StaffControl
 
-Monorepo con dos distribuciones independientes de StaffControl (plugin de moderación para Minecraft).
+Monorepo containing two independent distributions of the StaffControl moderation platform for Minecraft servers.
 
-## Distribuciones
+## Distributions
 
-| Distribución | Servidores | Java | Módulos | JAR final |
-|---|---|---|---|---|
-| **Legacy** (`Staff+`) | 1.7 – 1.16 | Java 8 | StaffPlusAPI + StaffPlusCore + 16 NMS modules | `Staff+.jar` |
-| **Modern** (`StaffControl`) | 1.17+ | Java 17+ | staff-api + staff-modern-core | `StaffControl.jar` |
+| Distribution              | Server Versions | Java     | Modules                                        | Final Artifact     |
+| ------------------------- | --------------- | -------- | ---------------------------------------------- | ------------------ |
+| **Staff+ (Legacy)**       | 1.7 – 1.16      | Java 8   | StaffPlusAPI + StaffPlusCore + version modules | `Staff+.jar`       |
+| **StaffControl (Modern)** | 1.17+           | Java 17+ | staff-api + staff-modern-core                  | `StaffControl.jar` |
 
-Ambas comparten la misma API (`staff-api`, package `xyz.bt31.staffcontrol.api`). El legacy es mantenimiento-congelado (solo bugs). El moderno se desarrolla activamente contra Paper API.
+Both distributions share the same public API concepts, but target different Minecraft generations.
 
-## Build
+* **Legacy** is feature-frozen and only receives bug fixes.
+* **Modern** is actively developed against the Paper API.
+
+---
+
+## Building
 
 ### Legacy
+
 ```bash
-bash install-dependencies.sh   # one-time: craftbukkit + NMS modules → .m2
-mvn clean package              # StaffPlusCore/target/Staff+.jar
+bash install-dependencies.sh
+mvn clean package
+```
+
+Produces:
+
+```text
+StaffPlusCore/target/Staff+.jar
 ```
 
 ### Modern
+
 ```bash
 mvn clean package -pl staff-api,staff-modern-core -am
-# staff-modern-core/target/StaffControl.jar
 ```
 
-### Full reactor (todo lo que el JDK soporte)
+Produces:
+
+```text
+staff-modern-core/target/StaffControl.jar
+```
+
+### Full Reactor
+
 ```bash
 mvn clean package
 ```
 
-## Módulos activos en reactor
+Builds all modules supported by the current JDK.
 
-| Módulo | Propósito | Compila con |
-|---|---|---|
-| `StaffPlusAPI` | API legacy (`net.shortninja.staffplus`) — **frozen** | Java 8 |
-| `staff-api` | API compartida (`xyz.bt31.staffcontrol.api`) | Java 8 |
-| `StaffPlusCore` | Core legacy — comentado, necesita craftbukkit | Java 8 |
-| `v1_17_plus` | Adapter NMS-free legacy — comentado, necesita JDK 16+ | Java 16 |
-| `staff-modern-core` | Core moderno Paper 1.17+ — comentado, necesita JDK 17+ | Java 17 |
+---
 
-## StaffControl (distribución moderna)
+## Active Modules
 
-### Dependencias
-- **Paper API 1.17+** (`io.papermc.paper:paper-api`, provided)
-- **staff-api** (`xyz.bt31.staffcontrol:staff-api`, compile → shaded)
-- **adventure-text-minimessage 4.17.0** (`net.kyori:adventure-text-minimessage`, compile → shaded)
+| Module            | Description                      | Java |
+| ----------------- | -------------------------------- | ---- |
+| StaffPlusAPI      | Legacy public API (frozen)       | 8    |
+| staff-api         | Shared API                       | 8    |
+| StaffPlusCore     | Legacy implementation            | 8    |
+| v1_17_plus        | Transitional compatibility layer | 16   |
+| staff-modern-core | Modern Paper implementation      | 17+  |
 
-### Stack tecnológico
-- Paper API + Adventure (chat, action bar, componentes)
-- MiniMessage para formato de texto con etiquetas legibles (`<red>`, `<gradient>`, `<click>`, etc.)
-- Sin NMS, sin Netty, sin PacketListenerAPI
-- Sin ServiceLoader, sin reflexión para versiones
-- Shade plugin produce `StaffControl.jar` listo para soltar en `plugins/`
+---
 
-### Arquitectura
-```
+## Modern Architecture
+
+### Dependencies
+
+* Paper API (provided)
+* staff-api
+* Adventure MiniMessage
+
+### Design Goals
+
+* No NMS
+* No packet manipulation
+* No ProtocolLib
+* No PacketListenerAPI
+* No runtime version reflection
+* Adventure-first messaging
+* Paper-first development
+
+### Core Structure
+
+```text
 staff-modern-core/
-├── StaffControlPlugin.java   ← extends JavaPlugin, entry point
-├── StaffControl.java         ← implements IStaffControl
-├── Options.java
-├── PermissionsHandler.java
-├── user/
-│   ├── User.java
-│   └── UserManager.java
-├── lang/
-│   ├── Lang.java             ← MiniMessage + messages-{locale}.yml
-│   └── messages-en.yml       ← mensajes por defecto en formato MiniMessage
+├── StaffControlPlugin.java
+├── StaffControl.java
 ├── command/
-│   ├── Command.java          ← base abstracta (permisos, player check, tab complete)
-│   ├── VanishCommand.java    ← /vanish [player]
-│   ├── FreezeCommand.java    ← /freeze <player>
-│   ├── ReportCommand.java    ← /report <player> <reason>
-│   ├── WarnCommand.java      ← /warn <player> <reason>
-│   └── StaffCommand.java     ← /staff <reload|chat>
+├── listener/
+├── user/
+├── lang/
 ├── capabilities/
-│   ├── ModernActionBarCapability.java
-│   ├── ModernChatCapability.java
-│   ├── ModernPlayerVisibilityCapability.java
-│   └── ModernInventoryCapability.java
-└── listener/
-    ├── PlayerJoinListener.java
-    ├── PlayerQuitListener.java
-    └── ChatAlertListener.java
+└── permissions/
 ```
+
+---
 
 ## Testing
 
-No hay tests unitarios. Verificación solo build.
+Currently there are no automated tests.
 
-## CI
+Validation is performed through successful builds and runtime verification.
 
-CircleCI: pendiente de configuración para la nueva estructura.
+---
 
-## Notas importantes
+## Continuous Integration
 
-- El repositorio original se movió de `AjnebAlReves/StaffPlus` → `AjnebAlReves/StaffControl` (el remote se redirige automáticamente).
-- La rama activa de desarrollo es `feat/v1_17-plus-module`.
-- El workspace tiene JDK 11; **no se puede compilar** `staff-modern-core` (necesita JDK 17+) ni `v1_17_plus` (necesita JDK 16+) aquí. Solo compila `staff-api` + `StaffPlusAPI`.
-- Los módulos legacy `v1_7_R1` – `v1_16_R2` están congelados. Se les removieron las clases `ProtocolProvider*` y `META-INF/services/net.shortninja.staffplus.server.compatibility.protocol.*`.
-- StaffPlusCore (`StaffPlus.java`) usa `provider.supports()` en vez de `.equals()` y atrapa `ServiceConfigurationError`. No tocar.
+CircleCI migration is currently in progress.
 
-## Convenciones
+---
 
-- `.gitignore` limpio (sin marcadores de merge conflict)
-- Legacy: Java 8 (`-source 8 -target 8`). Moderno: Java 17+.
-- No sombrear APIs de Bukkit/Spigot/Paper (scope `provided`).
-- `staff-api` es Java 8 para que ambas distribuciones puedan usarlo.
-- Todos los mensajes al jugador usan Adventure Components via Lang; nunca enviar Strings planas.
-- Los templates de mensajes NO incluyen `<prefix>` inline; usar `Lang.sendWithPrefix()` que antepone el Component.
-- Placeholders en mensajes: usar `Lang.target()`, `Lang.staff()`, `Lang.reason()`, etc. (TagResolvers de MiniMessage).
-- Commands extienden `Command` (base) que implementa `CommandExecutor` + `TabCompleter`.
-- Permisos definidos en `plugin.yml` con naming `staffcontrol.*`.
+## Development Notes
+
+* Repository migrated from `AjnebAlReves/StaffPlus` to `AjnebAlReves/StaffControl`.
+* Active development branch: `feat/v1_17-plus-module`.
+* Legacy compatibility modules (`v1_7_R1` through `v1_16_R2`) are maintenance-only.
+* `staff-api` remains Java 8 compatible to support both distributions.
+
+---
+
+## Coding Conventions
+
+### Messaging
+
+* Use Adventure Components exclusively.
+* Never send raw Strings directly to players.
+* Use `Lang.sendWithPrefix()` for prefixed messages.
+* Use TagResolvers for placeholders.
+
+### Commands
+
+* Commands must extend the shared `Command` base class.
+* Permissions follow the `staffcontrol.*` namespace.
+
+### Dependencies
+
+* Bukkit, Spigot and Paper APIs must remain `provided`.
+* Do not shade server APIs into plugin artifacts.
+
+### Java Versions
+
+| Component  | Java |
+| ---------- | ---- |
+| Legacy     | 8    |
+| Shared API | 8    |
+| Modern     | 17+  |

@@ -1,29 +1,43 @@
-# Java Maven CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
-version: 2
+version: 2.1
+
 jobs:
-  build:
+  build-jdk8:
     docker:
-      - image: circleci/openjdk:8-jdk
-
-    parallelism: 4
+      - image: cimg/openjdk:8.0
     working_directory: ~/repo
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
-
-      - run: mvn dependency:go-offline
-
+            - v1-deps-{{ checksum "pom.xml" }}
+      - run: mvn dependency:go-offline -pl StaffPlusAPI,staff-api -am
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
+          key: v1-deps-{{ checksum "pom.xml" }}
+      - run: mvn clean package -pl StaffPlusAPI,staff-api -am
+      - run: mvn test -pl staff-api -am
 
-      - run: mvn clean install
+  build-jdk17:
+    docker:
+      - image: cimg/openjdk:17.0
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-deps-{{ checksum "staff-modern-core/pom.xml" }}
+      - run: mvn dependency:go-offline -pl staff-api,staff-modern-core -am
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v2-deps-{{ checksum "staff-modern-core/pom.xml" }}
+      - run: mvn clean package -pl staff-api,staff-modern-core -am
+      - run: mvn test -pl staff-api,staff-modern-core -am
+
+workflows:
+  version: 2
+  build-all:
+    jobs:
+      - build-jdk8
+      - build-jdk17
