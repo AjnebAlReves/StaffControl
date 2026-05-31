@@ -1,82 +1,85 @@
-# Staff+ (`StaffPlus`)
+# StaffPlus / StaffControl
 
-Spigot/Bukkit moderation plugin supporting Minecraft 1.7–1.16. Java 8, Maven multi-module.
+Monorepo con dos distribuciones independientes de StaffControl (plugin de moderación para Minecraft).
+
+## Distribuciones
+
+| Distribución | Servidores | Java | Módulos | JAR final |
+|---|---|---|---|---|
+| **Legacy** (`Staff+`) | 1.7 – 1.16 | Java 8 | StaffPlusAPI + StaffPlusCore + 16 NMS modules | `Staff+.jar` |
+| **Modern** (`StaffControl`) | 1.17+ | Java 17+ | staff-api + staff-modern-core | `StaffControl.jar` |
+
+Ambas comparten la misma API (`staff-api`, package `xyz.bt31.staffcontrol.api`). El legacy es mantenimiento-congelado (solo bugs). El moderno se desarrolla activamente contra Paper API.
 
 ## Build
 
+### Legacy
 ```bash
-bash install-dependencies.sh   # one-time: installs craftbukkit + legacy version modules into .m2
-mvn clean package              # produces StaffPlusCore/target/Staff+.jar (shaded)
+bash install-dependencies.sh   # one-time: craftbukkit + NMS modules → .m2
+mvn clean package              # StaffPlusCore/target/Staff+.jar
 ```
 
-First-time builds need Spigot/CraftBukkit in local `.m2`. Run `install-dependencies.sh` (or use [BuildTools](https://www.spigotmc.org/wiki/buildtools/) for individual Bukkit versions).
+### Modern
+```bash
+mvn clean package -pl staff-api,staff-modern-core -am
+# staff-modern-core/target/StaffControl.jar
+```
 
-## Modules
+### Full reactor (todo lo que el JDK soporte)
+```bash
+mvn clean package
+```
 
-| Module | Purpose | Status |
+## Módulos activos en reactor
+
+| Módulo | Propósito | Compila con |
 |---|---|---|
-| `StaffPlusAPI` | Public API interfaces (`IStaffPlus`, `IUser`, etc.) | Active |
-| `StaffPlusCore` | Main plugin; shaded into `Staff+.jar` | Active |
-| `v1_17_plus` | **NMS-free** module for Minecraft 1.17+ (covers ALL future versions) | Active |
-| `v1_7_R1` … `v1_16_R2` | Legacy per-version protocol compatibility (16 modules) | **FROZEN** – pre-built by `install-dependencies.sh`, never modified |
+| `StaffPlusAPI` | API legacy (`net.shortninja.staffplus`) — **frozen** | Java 8 |
+| `staff-api` | API compartida (`xyz.bt31.staffcontrol.api`) | Java 8 |
+| `StaffPlusCore` | Core legacy — comentado, necesita craftbukkit | Java 8 |
+| `v1_17_plus` | Adapter NMS-free legacy — comentado, necesita JDK 16+ | Java 16 |
+| `staff-modern-core` | Core moderno Paper 1.17+ — comentado, necesita JDK 17+ | Java 17 |
 
-- `StaffPlusBungee` is excluded from the reactor build, not ready.
+## StaffControl (distribución moderna)
 
-## Key Files
+### Dependencias
+- **Paper API 1.17+** (`io.papermc.paper:paper-api`, provided)
+- **staff-api** (`xyz.bt31.staffcontrol:staff-api`, compile → shaded)
 
-- `StaffPlusCore/src/main/resources/plugin.yml` — main class `net.shortninja.staffplus.StaffPlus`, soft-depends: `PacketListenerApi`, `PlaceholderAPI`
-- `StaffPlusCore/src/main/java/net/shortninja/staffplus/StaffPlus.java` — JavaPlugin entrypoint; protocol classes loaded via `ServiceLoader<IProtocolProvider>` first, then reflection fallback from `net.shortninja.staffplus.server.compatibility.{version}.Protocol_{version}`, with a `v1_1x` package fallback
+### Stack tecnológico
+- Paper API + Adventure (chat, action bar, componentes)
+- Sin NMS, sin Netty, sin PacketListenerAPI
+- Sin ServiceLoader, sin reflexión para versiones
+- Shade plugin produce `StaffControl.jar` listo para soltar en `plugins/`
 
-## Adding a new Minecraft version
-
-### For pre-1.17 versions (with NMS):
-
-**Not applicable – legacy modules are FROZEN.** They will not be updated for new versions.
-
-### For 1.17+ (NMS-free via capability system):
-
-**No new modules needed.** The `v1_17_plus` module handles ALL 1.17+ versions. When a new Minecraft version releases:
-1. Update the version string in `ProtocolProvider_v1_17_R1.getVersion()` (e.g. change `"v1_17_R1"` to `"v1_18_R1"`)
-2. Optionally rename `Protocol_v1_17_R1` → `Protocol_v1_18_R1` if the class name must match the version string
-3. Capability implementations need no changes — they use pure Bukkit/Spigot API
-
-At runtime, `StaffPlus.java` tries `ServiceLoader<IProtocolProvider>` first (matching by version string), then falls back to reflection on the Bukkit package name (`v1_17_R1`). No switch statement or import to update.
-
-## Version compatibility modules
-
-### Legacy (v1_7_R1 … v1_16_R2) — FROZEN
-
-Each legacy module contains:
-- `Protocol_{version}` — NMS-specific protocol implementation (craftbukkit `provided` scope)
-- `ProtocolProvider_{version}` — ServiceLoader provider that registers the version string
-- `PacketHandler_{version}` — Netty `ChannelDuplexHandler` for packet interception
-- `PacketModifier_{version}` — optional packet modifier (newer versions only)
-- `META-INF/services/net.shortninja.staffplus.server.compatibility.IProtocolProvider` — service descriptor
-
-These modules are pre-built by `install-dependencies.sh` and installed to `.m2`. They are **never modified**. StaffPlusCore depends on them via Maven coordinates.
-
-### Modern (v1_17_plus) — Active
-
-The `v1_17_plus` module uses a different approach — no NMS, pure Bukkit/Spigot API:
-- `Protocol_v1_17_R1` — delegates to `VersionCapabilities` for version-sensitive operations
-- `ProtocolProvider_v1_17_R1` — ServiceLoader provider
-- `PacketHandler_v1_17_R1` — uses string-based class name matching (no NMS imports)
-- `capabilities/` — thin adapters for action bar, visibility, chat, inventory
-- `util/ComponentSerializer` — BungeeCord Chat API-based component builder
-
-The shade plugin in `StaffPlusCore/pom.xml` uses `ServicesResourceTransformer` to merge all per-module service descriptors into one consolidated file in `Staff+.jar`.
+### Arquitectura
+```
+staff-modern-core/
+├── StaffControlPlugin.java   ← extends JavaPlugin, entry point
+├── StaffControl.java         ← implements IStaffControl
+├── Options.java
+├── PermissionsHandler.java
+├── user/
+│   ├── User.java
+│   └── UserManager.java
+└── capabilities/
+    ├── ModernActionBarCapability.java
+    ├── ModernChatCapability.java
+    ├── ModernPlayerVisibilityCapability.java
+    └── ModernInventoryCapability.java
+```
 
 ## Testing
 
-There are **no tests** (no JUnit or test dependency in any POM). Verification is build-only.
+No hay tests unitarios. Verificación solo build.
 
 ## CI
 
-CircleCI (`ci/circleci: build`): `bash install-dependencies.sh && mvn clean install` on `circleci/openjdk:8-jdk`.
+CircleCI: pendiente de configuración para la nueva estructura.
 
-## Conventions & gotchas
+## Convenciones
 
-- `.gitignore` has leftover merge-conflict markers (`<<<<<<< HEAD` / `>>>>>>>`). Clean them when touching the file.
-- All modules target Java 8 (`maven.compiler.source/target = 1.8`). Do not use Java 9+ APIs. Exception: `v1_17_plus` targets Java 16+ (required by Spigot 1.17+).
-- The shade plugin in `StaffPlusCore` excludes `netty-all`, `hamcrest`, `junit`, and META-INF signatures. Do not shade Spigot/Bukkit APIs (they are `provided` scope).
-- Parent POM `<defaultGoal>clean package</defaultGoal>` — `mvn` with no goal runs `clean package`.
+- `.gitignore` limpio (sin marcadores de merge conflict)
+- Legacy: Java 8 (`-source 8 -target 8`). Moderno: Java 17+.
+- No sombrear APIs de Bukkit/Spigot/Paper (scope `provided`).
+- `staff-api` es Java 8 para que ambas distribuciones puedan usarlo.

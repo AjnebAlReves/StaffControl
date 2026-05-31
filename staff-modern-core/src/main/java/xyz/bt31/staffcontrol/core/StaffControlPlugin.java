@@ -5,23 +5,21 @@ import xyz.bt31.staffcontrol.api.IStaffControl;
 
 public class StaffControlPlugin extends JavaPlugin {
 
-    private StaffControl staffControl;
+    private static StaffControl instance;
 
     @Override
     public void onEnable() {
-        staffControl = new StaffControl(this);
+        instance = new StaffControl(this);
         getLogger().info("StaffControl v" + getDescription().getVersion() + " enabled");
     }
 
     @Override
     public void onDisable() {
-        if (staffControl != null) {
-            staffControl = null;
-        }
+        instance = null;
         getLogger().info("StaffControl disabled");
     }
 
-    public StaffControl getStaffControl() {
-        return staffControl;
+    public static StaffControl get() {
+        return instance;
     }
 }
