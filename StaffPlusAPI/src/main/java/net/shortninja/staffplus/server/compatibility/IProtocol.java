@@ -4,6 +4,8 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import net.shortninja.staffplus.server.compatibility.capabilities.VersionCapabilities;
+
 import java.util.Set;
 
 public interface IProtocol {
@@ -35,4 +37,8 @@ public interface IProtocol {
     void inject(Player player);
 
     void uninject(Player player);
+
+    default VersionCapabilities capabilities() {
+        return null;
+    }
 }

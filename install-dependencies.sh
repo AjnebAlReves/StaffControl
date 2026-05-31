@@ -29,7 +29,6 @@ for i in "${VERSIONS[@]}"; do
 
   if [[ ! -f "lib/$FILE" ]]; then
     echo "Downloading $FILE..."
-    curl "http://static.azoraqua.com/craftbukkit/craftbukkit-$i.jar" -s -o "$FILE"
    
   fi
 

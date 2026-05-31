@@ -61,6 +61,9 @@
                                     </excludes>
                                 </filter>
                             </filters>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                            </transformers>
                         </configuration>
                     </execution>
                 </executions>
@@ -180,6 +183,13 @@
 		<dependency>
             <groupId>net.shortninja.staffplus</groupId>
             <artifactId>v1_16_R2</artifactId>
+            <version>3.3.3.3</version>
+            <scope>compile</scope>
+        </dependency>
+
+		<dependency>
+            <groupId>net.shortninja.staffplus</groupId>
+            <artifactId>v1_17_plus</artifactId>
             <version>3.3.3.3</version>
             <scope>compile</scope>
         </dependency>

@@ -11,28 +11,8 @@ import net.shortninja.staffplus.server.AlertCoordinator;
 import net.shortninja.staffplus.server.PacketModifier;
 import net.shortninja.staffplus.server.chat.ChatHandler;
 import net.shortninja.staffplus.server.command.CmdHandler;
-import net.shortninja.staffplus.server.compatibility.AbstractProtocol;
-
 import net.shortninja.staffplus.server.compatibility.IProtocol;
-import net.shortninja.staffplus.server.compatibility.v1_10_R1.Protocol_v1_10_R1;
-import net.shortninja.staffplus.server.compatibility.v1_11_R1.Protocol_v1_11_R1;
-import net.shortninja.staffplus.server.compatibility.v1_12_R1.Protocol_v1_12_R1;
-import net.shortninja.staffplus.server.compatibility.v1_13_R1.Protocol_v1_13_R1;
-import net.shortninja.staffplus.server.compatibility.v1_13_R2.Protocol_v1_13_R2;
-import net.shortninja.staffplus.server.compatibility.v1_14_R1.Protocol_v1_14_R1;
-import net.shortninja.staffplus.server.compatibility.v1_14_R2.Protocol_v1_14_R2;
-import net.shortninja.staffplus.server.compatibility.v1_1x.Protocol_v1_15_R1;
-import net.shortninja.staffplus.server.compatibility.v1_1x.Protocol_v1_16_R1;
-import net.shortninja.staffplus.server.compatibility.v1_1x.Protocol_v1_16_R2;
-import net.shortninja.staffplus.server.compatibility.v1_7_R1.Protocol_v1_7_R1;
-import net.shortninja.staffplus.server.compatibility.v1_7_R2.Protocol_v1_7_R2;
-import net.shortninja.staffplus.server.compatibility.v1_7_R3.Protocol_v1_7_R3;
-import net.shortninja.staffplus.server.compatibility.v1_7_R4.Protocol_v1_7_R4;
-import net.shortninja.staffplus.server.compatibility.v1_8_R1.Protocol_v1_8_R1;
-import net.shortninja.staffplus.server.compatibility.v1_8_R2.Protocol_v1_8_R2;
-import net.shortninja.staffplus.server.compatibility.v1_8_R3.Protocol_v1_8_R3;
-import net.shortninja.staffplus.server.compatibility.v1_9_R1.Protocol_v1_9_R1;
-import net.shortninja.staffplus.server.compatibility.v1_9_R2.Protocol_v1_9_R2;
+import net.shortninja.staffplus.server.compatibility.IProtocolProvider;
 import net.shortninja.staffplus.server.data.*;
 import net.shortninja.staffplus.server.data.storage.FlatFileStorage;
 import net.shortninja.staffplus.server.data.storage.IStorage;
@@ -71,6 +51,7 @@ import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;
@@ -231,77 +212,56 @@ public class StaffPlus extends JavaPlugin implements IStaffPlus {
     }
 
     private boolean setupVersionProtocol() {
-        final String version = Bukkit.getServer().getClass().getPackage().getName();
-        final String formattedVersion = version.substring(version.lastIndexOf('.') + 1);
-        switch (formattedVersion) {
-            case "v1_7_R1":
-                versionProtocol = new Protocol_v1_7_R1(this);
-                break;
-            case "v1_7_R2":
-                versionProtocol = new Protocol_v1_7_R2(this);
-                break;
-            case "v1_7_R3":
-                versionProtocol = new Protocol_v1_7_R3(this);
-                break;
-            case "v1_7_R4":
-                versionProtocol = new Protocol_v1_7_R4(this);
-                break;
-            case "v1_8_R1":
-                versionProtocol = new Protocol_v1_8_R1(this);
-                break;
-            case "v1_8_R2":
-                versionProtocol = new Protocol_v1_8_R2(this);
-                break;
-            case "v1_8_R3":
-                versionProtocol = new Protocol_v1_8_R3(this);
-                break;
-            case "v1_9_R1":
-                versionProtocol = new Protocol_v1_9_R1(this);
-                break;
-            case "v1_9_R2":
-                versionProtocol = new Protocol_v1_9_R2(this);
-                break;
-            case "v1_10_R1":
-                versionProtocol = new Protocol_v1_10_R1(this);
-                break;
-            case "v1_11_R1":
-                versionProtocol = new Protocol_v1_11_R1(this);
-                break;
-            case "v1_12_R1":
-                versionProtocol = new Protocol_v1_12_R1(this);
-                break;
-            case "v1_13_R1":
-                versionProtocol = new Protocol_v1_13_R1(this);
-                break;
-            case "v1_13_R2":
-                versionProtocol = new Protocol_v1_13_R2(this);
-                break;
-            case "v1_14_R1":
-                String[] tmp = Bukkit.getServer().getVersion().split("MC: ");
-                String ver = tmp[tmp.length - 1].substring(0, 6);
-                System.out.println(ver);
-                if(ver.equals("1.14.3")||ver.equals("1.14.4"))
-                    versionProtocol = new Protocol_v1_14_R2(this);
-                else
-                    versionProtocol = new Protocol_v1_14_R1(this);
-                break;
-            case "v1_15_R1":
-                versionProtocol = new Protocol_v1_15_R1(this);
-                break;
-            case "v1_16_R1":
-                versionProtocol = new Protocol_v1_16_R1(this);
-                break;
-            case "v1_16_R2":
-                versionProtocol = new Protocol_v1_16_R2(this);
-                break;
+        String version = Bukkit.getServer().getClass().getPackage().getName();
+        String formattedVersion = version.substring(version.lastIndexOf('.') + 1);
 
+        // Special case: v1_14_R1 package covers MC 1.14.0-1.14.4,
+        // but 1.14.3+ need different protocol behavior (v1_14_R2 module)
+        if (formattedVersion.equals("v1_14_R1")) {
+            String[] tmp = Bukkit.getServer().getVersion().split("MC: ");
+            String ver = tmp[tmp.length - 1].substring(0, 6);
+            if (ver.equals("1.14.3") || ver.equals("1.14.4"))
+                formattedVersion = "v1_14_R2";
         }
 
-        if (versionProtocol != null) {
-            message.sendConsoleMessage("Version protocol set to '" + formattedVersion + "'.", false);
+        // Attempt 1: ServiceLoader-based discovery (explicit provider per version)
+        String resolvedBy = "ServiceLoader";
+        try {
+            ServiceLoader<IProtocolProvider> loader = ServiceLoader.load(IProtocolProvider.class);
+            for (IProtocolProvider provider : loader) {
+                if (provider.getVersion().equals(formattedVersion)) {
+                    versionProtocol = provider.create(this);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // fall through
         }
 
-        return versionProtocol != null;
+        // Attempt 2: Reflection fallback (version-specific package, then v1_1x)
+        if (versionProtocol == null) {
+            resolvedBy = "reflection";
+            try {
+                versionProtocol = loadProtocol(formattedVersion, formattedVersion);
+            } catch (ReflectiveOperationException e1) {
+                try {
+                    resolvedBy = "reflection (v1_1x fallback)";
+                    versionProtocol = loadProtocol("v1_1x", formattedVersion);
+                } catch (ReflectiveOperationException e2) {
+                    return false;
+                }
+            }
+        }
+
+        message.sendConsoleMessage("Version protocol set to '" + formattedVersion + "' [" + resolvedBy + "]: " + versionProtocol.getClass().getName(), false);
+        return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    private IProtocol loadProtocol(String pkg, String ver) throws ReflectiveOperationException {
+        String className = "net.shortninja.staffplus.server.compatibility." + pkg + ".Protocol_" + ver;
+        Class<? extends IProtocol> clazz = (Class<? extends IProtocol>) Class.forName(className);
+        return clazz.getConstructor(IStaffPlus.class).newInstance(this);
     }
 
     private void registerListeners() {
