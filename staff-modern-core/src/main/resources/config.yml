@@ -1,0 +1,20 @@
+storage:
+  type: sqlite
+  sqlite:
+    file: staffcontrol.db
+  mysql:
+    host: localhost
+    port: 3306
+    database: staffcontrol
+    username: root
+    password: ""
+
+vanish:
+  on-join: false
+
+alerts:
+  xray: true
+  mention: true
+  name-change: true
+
+sounds: []

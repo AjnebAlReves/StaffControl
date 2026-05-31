@@ -2,7 +2,6 @@ package xyz.bt31.staffcontrol.core;
 
 import xyz.bt31.staffcontrol.api.IOptions;
 import xyz.bt31.staffcontrol.api.IStaffControl;
-import xyz.bt31.staffcontrol.api.IUserManager;
 import xyz.bt31.staffcontrol.api.util.IPermissionsHandler;
 
 public class StaffControl implements IStaffControl {
@@ -16,7 +15,7 @@ public class StaffControl implements IStaffControl {
         this.plugin = plugin;
         this.userManager = new UserManager();
         this.permissionsHandler = new PermissionsHandler();
-        this.options = new Options();
+        this.options = new Options(plugin.getConfig());
     }
 
     @Override
@@ -30,7 +29,7 @@ public class StaffControl implements IStaffControl {
     }
 
     @Override
-    public IUserManager getUserManager() {
+    public UserManager getUserManager() {
         return userManager;
     }
 
