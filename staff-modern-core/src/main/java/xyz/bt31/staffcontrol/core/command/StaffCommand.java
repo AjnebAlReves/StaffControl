@@ -32,8 +32,7 @@ public class StaffCommand extends Command {
                 if (!checkPermission(sender, "staffcontrol.reload")) return true;
                 staffControl.getPlugin().reloadConfig();
                 staffControl.reloadLang();
-                lang.load();
-                lang.sendWithPrefix(sender, "reload-complete");
+                staffControl.getLang().sendWithPrefix(sender, "reload-complete");
             }
             case "chat" -> {
                 Player player = checkPlayer(sender);

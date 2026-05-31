@@ -120,4 +120,8 @@ public class Lang {
     public static TagResolver usage(String usage) {
         return Placeholder.unparsed("usage", usage);
     }
+
+    public static TagResolver message(String message) {
+        return Placeholder.unparsed("message", message);
+    }
 }

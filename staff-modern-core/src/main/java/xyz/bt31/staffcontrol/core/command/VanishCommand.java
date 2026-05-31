@@ -35,10 +35,10 @@ public class VanishCommand extends Command {
             User targetUser = (User) staffControl.getUserManager().get(target.getUniqueId());
             toggleVanish(target, targetUser);
             if (targetUser.getVanishType() != VanishType.NONE) {
-                lang.sendWithPrefix(sender, "freeze-target-enabled",
+                lang.sendWithPrefix(sender, "vanish-list-enabled",
                     Lang.target(target.getName()));
             } else {
-                lang.sendWithPrefix(sender, "freeze-target-disabled",
+                lang.sendWithPrefix(sender, "vanish-list-disabled",
                     Lang.target(target.getName()));
             }
         }

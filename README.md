@@ -1,37 +1,93 @@
-# Staff+
-This plugin started off as a copy of HydraHCF's staff mode plugin back in July of 2015. After selling over ninety copies on MCM and making multiple revisions, it is now free to the public! 
-----
-[![CI/CD](https://img.shields.io/circleci/build/github/Azoraqua/StaffPlus/master.svg?style=default)]()
-[![Documentation](https://readthedocs.org/projects/staffplus/badge/?version=latest)](https://staffplus.readthedocs.io/en/latest/)
+# StaffControl / Staff+
 
-#### Version 3.0 changelog (major features)
-* TONS of new configuration options.
-* GUI hub in staff mode that allows for multiple different teleportation and management options.
-* Counter item in staff mode shows amount of staff online or amount of staff in staff mode. Also allows for teleportation.
-* Multiple examine improvements.
-* Ability to add unlimited custom modules with tons of options.
-* Brand new ticket management system.
-* Better overall alerts handling.
-* Configurable messages with language support.
-* Version independence (from 1.7 to 1.12).
-* Fixed all known bugs.
-* Removed ProtocolLib dependency.
+Monorepo con dos distribuciones independientes de un plugin de moderación para Minecraft.
 
-#### Useful links
-* [Resource page](https://www.spigotmc.org/resources/staff-the-ultimate-moderation-plugin-1-7-1-13.41500/)
-* [Submit issues](https://github.com/Qballl/StaffPlus/issues)
-* [Request features or ask questions](https://discord.gg/N6VqtYC)
-* [Configurable files](https://github.com/Shortninja66/StaffPlus/wiki/Configurable-files)
-* [Plugin jar download](https://www.spigotmc.org/resources/staff-the-ultimate-moderation-plugin-1-7-1-13.41500/history)
-* [Help wiki](https://github.com/Shortninja66/StaffPlus/wiki)
+| Distribución | Servidores | Java | JAR final |
+|---|---|---|---|
+| **StaffControl** (moderno) | 1.17+ | 17+ | `StaffControl.jar` |
+| **Staff+** (legacy) | 1.7 – 1.16 | 8 | `Staff+.jar` |
 
-#### Contributing
-* Fork this repo
-* Clone your repo
-* Make your changes
-* Submit a pull request
+Ambas comparten la API `staff-api` (`xyz.bt31.staffcontrol.api`). La rama activa de desarrollo es `feat/v1_17-plus-module`.
 
-#### Building
-* Clone this repo
-* Run mvn clean package
-* Wait (if you have never ran BuildTools before it will take a while future builds will be faster)
+---
+
+## StaffControl (distribución moderna)
+
+Plugin de moderación para servidores Paper 1.17+ sin NMS, sin reflexión de versiones, basado en Paper API + Adventure.
+
+### Stack tecnológico
+- **Paper API 1.17+** — plataforma
+- **Adventure** — componentes de chat, action bar
+- **MiniMessage 4.17.0** — formato de texto legible (`<red>`, `<gradient>`, `<click>`, etc.)
+- **SQLite / MySQL** — persistencia de reports y warnings vía JDBC
+- **Maven Shade** — empaquetado en `StaffControl.jar`
+
+### Características
+- `/vanish` — Modo vanish total (oculto de staff sin permiso `staffcontrol.staff`)
+- `/freeze` — Congelar / descongelar jugadores (bloquea reingreso si está congelado)
+- `/report` — Reportar jugadores con persistencia en base de datos
+- `/warn` — Advertir jugadores con persistencia en base de datos
+- `/staff` — Menú de staff: recarga de configuración (`reload`), chat privado de staff (`chat`)
+- **Alertas** — Mención `@staff`, cambio de nombre, detección de x-ray
+- **Staff chat** — Chat privado entre staff con formato customizable
+- **Sistema de idiomas** — Archivos `messages-{locale}.yml` con MiniMessage
+
+### Compilar
+
+```bash
+mvn clean package -pl staff-api,staff-modern-core -am
+# → staff-modern-core/target/StaffControl.jar
+```
+
+Requiere JDK 17+ para compilar `staff-modern-core`.
+
+### Instalación
+
+1. Soltar `StaffControl.jar` en `plugins/`
+2. Reiniciar el servidor
+3. Configurar `plugins/StaffControl/config.yml`
+
+---
+
+## Staff+ (legacy, mantenimiento congelado)
+
+Versión original para servidores 1.7 – 1.16. Solo recibe parches de seguridad.
+
+### Compilar
+
+```bash
+bash install-dependencies.sh   # one-time
+mvn clean package              # StaffPlusCore/target/Staff+.jar
+```
+
+Requiere JDK 8–11.
+
+---
+
+## API compartida (`staff-api`)
+
+Las interfaces comunes están en `xyz.bt31.staffcontrol.api` (Java 8). Usada por ambas distribuciones.
+
+### Módulos del reactor
+
+| Módulo | JDK | Estado |
+|---|---|---|
+| `StaffPlusAPI` | 8 | Congelado |
+| `staff-api` | 8 | Activo |
+| `StaffPlusCore` | 8 | Congelado (comentado) |
+| `v1_17_plus` | 16 | Congelado (comentado) |
+| `staff-modern-core` | 17+ | Activo |
+
+### Permisos
+
+| Permiso | Descripción |
+|---|---|
+| `staffcontrol.*` | Todos los permisos (op por defecto) |
+| `staffcontrol.vanish` | Usar `/vanish` |
+| `staffcontrol.freeze` | Usar `/freeze` |
+| `staffcontrol.report` | Usar `/report` (true por defecto) |
+| `staffcontrol.warn` | Usar `/warn` |
+| `staffcontrol.staff` | Usar `/staff` |
+| `staffcontrol.reload` | Recargar configuración |
+| `staffcontrol.alerts` | Recibir alertas |
+| `staffcontrol.reports.receive` | Recibir notificaciones de reportes |

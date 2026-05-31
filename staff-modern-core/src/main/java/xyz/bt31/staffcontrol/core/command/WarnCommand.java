@@ -2,8 +2,12 @@ package xyz.bt31.staffcontrol.core.command;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import xyz.bt31.staffcontrol.api.IWarning;
 import xyz.bt31.staffcontrol.core.StaffControl;
 import xyz.bt31.staffcontrol.core.lang.Lang;
+import xyz.bt31.staffcontrol.core.model.Warning;
+
+import java.util.UUID;
 
 public class WarnCommand extends Command {
 
@@ -29,6 +33,10 @@ public class WarnCommand extends Command {
 
         String reason = String.join(" ", java.util.Arrays.copyOfRange(args, 1, args.length));
         String senderName = sender instanceof Player ? sender.getName() : "Console";
+        UUID senderUuid = sender instanceof Player ? ((Player) sender).getUniqueId() : UUID.randomUUID();
+
+        IWarning warning = new Warning(senderUuid, senderName, reason);
+        staffControl.getWarningStorage().save(warning, target.getUniqueId());
 
         lang.sendWithPrefix((CommandSender) target, "warn-received",
             Lang.staff(senderName), Lang.reason(reason));
