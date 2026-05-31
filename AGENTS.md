@@ -93,6 +93,14 @@ No hay tests unitarios. Verificación solo build.
 
 CircleCI: pendiente de configuración para la nueva estructura.
 
+## Notas importantes
+
+- El repositorio original se movió de `AjnebAlReves/StaffPlus` → `AjnebAlReves/StaffControl` (el remote se redirige automáticamente).
+- La rama activa de desarrollo es `feat/v1_17-plus-module`.
+- El workspace tiene JDK 11; **no se puede compilar** `staff-modern-core` (necesita JDK 17+) ni `v1_17_plus` (necesita JDK 16+) aquí. Solo compila `staff-api` + `StaffPlusAPI`.
+- Los módulos legacy `v1_7_R1` – `v1_16_R2` están congelados. Se les removieron las clases `ProtocolProvider*` y `META-INF/services/net.shortninja.staffplus.server.compatibility.protocol.*`.
+- StaffPlusCore (`StaffPlus.java`) usa `provider.supports()` en vez de `.equals()` y atrapa `ServiceConfigurationError`. No tocar.
+
 ## Convenciones
 
 - `.gitignore` limpio (sin marcadores de merge conflict)
