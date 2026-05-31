@@ -6,3 +6,67 @@ load: POSTWORLD
 author: ByAlReves
 description: Staff management plugin for modern Minecraft servers (1.17+)
 softdepend: [PlaceholderAPI]
+
+commands:
+  vanish:
+    description: Toggle vanish mode
+    aliases: [v]
+    permission: staffcontrol.vanish
+    usage: /<command> [player]
+  freeze:
+    description: Freeze or unfreeze a player
+    aliases: [fr]
+    permission: staffcontrol.freeze
+    usage: /<command> <player>
+  report:
+    description: Report a player
+    aliases: [rp]
+    permission: staffcontrol.report
+    usage: /<command> <player> <reason>
+  warn:
+    description: Warn a player
+    permission: staffcontrol.warn
+    usage: /<command> <player> <reason>
+  staff:
+    description: Staff management commands
+    aliases: [staffmode, staffchat]
+    permission: staffcontrol.staff
+    usage: /<command> <reload|chat>
+
+permissions:
+  staffcontrol.*:
+    description: All StaffControl permissions
+    default: op
+    children:
+      staffcontrol.vanish: true
+      staffcontrol.freeze: true
+      staffcontrol.report: true
+      staffcontrol.warn: true
+      staffcontrol.staff: true
+      staffcontrol.reload: true
+      staffcontrol.alerts: true
+      staffcontrol.reports.receive: true
+  staffcontrol.vanish:
+    description: Allows using /vanish
+    default: op
+  staffcontrol.freeze:
+    description: Allows using /freeze
+    default: op
+  staffcontrol.report:
+    description: Allows using /report
+    default: true
+  staffcontrol.warn:
+    description: Allows using /warn
+    default: op
+  staffcontrol.staff:
+    description: Allows using /staff
+    default: op
+  staffcontrol.reload:
+    description: Allows reloading the config
+    default: op
+  staffcontrol.alerts:
+    description: Receive alerts (chat mentions, x-ray, etc.)
+    default: op
+  staffcontrol.reports.receive:
+    description: Receive report notifications
+    default: op

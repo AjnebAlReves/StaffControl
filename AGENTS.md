@@ -45,9 +45,11 @@ mvn clean package
 ### Dependencias
 - **Paper API 1.17+** (`io.papermc.paper:paper-api`, provided)
 - **staff-api** (`xyz.bt31.staffcontrol:staff-api`, compile → shaded)
+- **adventure-text-minimessage 4.17.0** (`net.kyori:adventure-text-minimessage`, compile → shaded)
 
 ### Stack tecnológico
 - Paper API + Adventure (chat, action bar, componentes)
+- MiniMessage para formato de texto con etiquetas legibles (`<red>`, `<gradient>`, `<click>`, etc.)
 - Sin NMS, sin Netty, sin PacketListenerAPI
 - Sin ServiceLoader, sin reflexión para versiones
 - Shade plugin produce `StaffControl.jar` listo para soltar en `plugins/`
@@ -62,11 +64,25 @@ staff-modern-core/
 ├── user/
 │   ├── User.java
 │   └── UserManager.java
-└── capabilities/
-    ├── ModernActionBarCapability.java
-    ├── ModernChatCapability.java
-    ├── ModernPlayerVisibilityCapability.java
-    └── ModernInventoryCapability.java
+├── lang/
+│   ├── Lang.java             ← MiniMessage + messages-{locale}.yml
+│   └── messages-en.yml       ← mensajes por defecto en formato MiniMessage
+├── command/
+│   ├── Command.java          ← base abstracta (permisos, player check, tab complete)
+│   ├── VanishCommand.java    ← /vanish [player]
+│   ├── FreezeCommand.java    ← /freeze <player>
+│   ├── ReportCommand.java    ← /report <player> <reason>
+│   ├── WarnCommand.java      ← /warn <player> <reason>
+│   └── StaffCommand.java     ← /staff <reload|chat>
+├── capabilities/
+│   ├── ModernActionBarCapability.java
+│   ├── ModernChatCapability.java
+│   ├── ModernPlayerVisibilityCapability.java
+│   └── ModernInventoryCapability.java
+└── listener/
+    ├── PlayerJoinListener.java
+    ├── PlayerQuitListener.java
+    └── ChatAlertListener.java
 ```
 
 ## Testing
@@ -83,3 +99,8 @@ CircleCI: pendiente de configuración para la nueva estructura.
 - Legacy: Java 8 (`-source 8 -target 8`). Moderno: Java 17+.
 - No sombrear APIs de Bukkit/Spigot/Paper (scope `provided`).
 - `staff-api` es Java 8 para que ambas distribuciones puedan usarlo.
+- Todos los mensajes al jugador usan Adventure Components via Lang; nunca enviar Strings planas.
+- Los templates de mensajes NO incluyen `<prefix>` inline; usar `Lang.sendWithPrefix()` que antepone el Component.
+- Placeholders en mensajes: usar `Lang.target()`, `Lang.staff()`, `Lang.reason()`, etc. (TagResolvers de MiniMessage).
+- Commands extienden `Command` (base) que implementa `CommandExecutor` + `TabCompleter`.
+- Permisos definidos en `plugin.yml` con naming `staffcontrol.*`.
