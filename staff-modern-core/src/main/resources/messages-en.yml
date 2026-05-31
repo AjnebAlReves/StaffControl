@@ -1,0 +1,47 @@
+prefix: "<gradient:#55FF55:#AAFFAA><bold>StaffControl</bold></gradient><gray> »</gray>"
+
+no-permission: "<red>You don't have permission to use this command.</red>"
+player-only: "<red>This command can only be run by a player.</red>"
+invalid-usage: "<red>Invalid usage. Correct: <click:suggest_command:'<usage>'><yellow><usage></yellow></click></red>"
+
+vanish-enabled: "<green>You are now <bold>vanished</bold>.</green>"
+vanish-disabled: "<red>You are no longer <bold>vanished</bold>.</red>"
+vanish-list-enabled: "<green>You are now hidden from the player list.</green>"
+vanish-list-disabled: "<red>You are now visible on the player list.</red>"
+
+freeze-enabled: "<gold>You have been <bold>frozen</bold> by <staff>.</gold>"
+freeze-disabled: "<green>You have been <bold>unfrozen</bold> by <staff>.</green>"
+freeze-target-enabled: "<gold><target> has been <bold>frozen</bold>.</gold>"
+freeze-target-disabled: "<green><target> has been <bold>unfrozen</bold>.</green>"
+freeze-login-blocked: "<red><bold>You are frozen!</bold></red><newline><gray>You cannot join while frozen. Contact a staff member.</gray>"
+
+report-sent: "<green>Your report has been submitted.</green>"
+report-received: "<gold>New report from <reporter></gold><newline><gray>Reason: <reason></gray>"
+report-cooldown: "<red>Please wait before sending another report.</red>"
+
+warn-issued: "<gold><target> has been warned.</gold>"
+warn-received: "<gold>You have received a warning from <staff></gold><newline><gray>Reason: <reason></gray>"
+warn-removed: "<green>Warning removed from <target>.</green>"
+
+staff-chat-format: "<dark_gray>[<gold>Staff</gold>] <player><gray>: </gray><message>"
+staff-chat-toggled-on: "<green>Staff chat enabled.</green>"
+staff-chat-toggled-off: "<red>Staff chat disabled.</red>"
+
+staff-mode-enabled: "<green>Staff mode <bold>enabled</bold>.</green>"
+staff-mode-disabled: "<red>Staff mode <bold>disabled</bold>.</red>"
+
+user-not-found: "<red>Player <target> not found.</red>"
+user-offline: "<red><target> is offline.</red>"
+
+reload-complete: "<green>Configuration reloaded.</green>"
+
+# Tickets
+ticket-submitted: "<green>Ticket <bold>#<id></bold> submitted.</green>"
+ticket-opened: "<gold>New ticket #<id> from <target></gold><newline><gray><reason></gray>"
+ticket-response-staff: "<green>Response sent to <target> for ticket #<id>.</green>"
+ticket-response-user: "<gold>Staff <staff> responded to ticket #<id></gold><newline><gray><reason></gray>"
+ticket-closed: "<red>Ticket #<id> closed.</red><newline><gray>Reason: <reason></gray>"
+ticket-removed: "<red>Ticket #<id> (<target>) removed.</red><newline><gray>Reason: <reason></gray>"
+ticket-not-found: "<red>Ticket for <target> not found.</red>"
+ticket-list-entry: "<gray>#<id></gray> <target><gray>: </gray><reason>"
+ticket-list-empty: "<gray>No open tickets.</gray>"

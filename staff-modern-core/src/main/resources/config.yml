@@ -1,0 +1,59 @@
+lang: en
+
+storage:
+  type: sqlite
+  sqlite:
+    file: staffcontrol.db
+  mysql:
+    host: localhost
+    port: 3306
+    database: staffcontrol
+    username: root
+    password: ""
+
+vanish:
+  on-join: false
+
+alerts:
+  xray: true
+  mention: true
+  name-change: true
+
+sounds: []
+
+tickets:
+  enabled: true
+  keep-open: false
+
+staff-mode:
+  items:
+    compass:
+      slot: 0
+      material: COMPASS
+      name: "&aTeleport &7(Right Click)"
+      command: "/staff teleport"
+    random-tp:
+      slot: 1
+      material: RECORD_11
+      name: "&aRandom Teleport"
+      command: "/staff randomtp"
+    freeze:
+      slot: 2
+      material: PACKED_ICE
+      name: "&bFreeze Player"
+      command: "/freeze %player%"
+    inspect:
+      slot: 3
+      material: BOOK
+      name: "&6Inspect Player"
+      command: "/staff inspect"
+    staff-list:
+      slot: 4
+      material: SKULL_ITEM
+      name: "&eStaff Online"
+      command: "/staff list"
+    vanish:
+      slot: 5
+      material: WATCH
+      name: "&7Vanish"
+      command: "/vanish"

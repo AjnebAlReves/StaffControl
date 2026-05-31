@@ -1,37 +1,127 @@
-# Staff+
-This plugin started off as a copy of HydraHCF's staff mode plugin back in July of 2015. After selling over ninety copies on MCM and making multiple revisions, it is now free to the public! 
-----
-[![CI/CD](https://img.shields.io/circleci/build/github/Azoraqua/StaffPlus/master.svg?style=default)]()
-[![Documentation](https://readthedocs.org/projects/staffplus/badge/?version=latest)](https://staffplus.readthedocs.io/en/latest/)
+# StaffControl
 
-#### Version 3.0 changelog (major features)
-* TONS of new configuration options.
-* GUI hub in staff mode that allows for multiple different teleportation and management options.
-* Counter item in staff mode shows amount of staff online or amount of staff in staff mode. Also allows for teleportation.
-* Multiple examine improvements.
-* Ability to add unlimited custom modules with tons of options.
-* Brand new ticket management system.
-* Better overall alerts handling.
-* Configurable messages with language support.
-* Version independence (from 1.7 to 1.12).
-* Fixed all known bugs.
-* Removed ProtocolLib dependency.
+A modern moderation and staff management plugin for Minecraft servers.
 
-#### Useful links
-* [Resource page](https://www.spigotmc.org/resources/staff-the-ultimate-moderation-plugin-1-7-1-13.41500/)
-* [Submit issues](https://github.com/Qballl/StaffPlus/issues)
-* [Request features or ask questions](https://discord.gg/N6VqtYC)
-* [Configurable files](https://github.com/Shortninja66/StaffPlus/wiki/Configurable-files)
-* [Plugin jar download](https://www.spigotmc.org/resources/staff-the-ultimate-moderation-plugin-1-7-1-13.41500/history)
-* [Help wiki](https://github.com/Shortninja66/StaffPlus/wiki)
+StaffControl provides staff mode, vanish, reports, staff chat, player inspection tools, ticket management, alerts, and other moderation utilities through a unified and extensible platform.
 
-#### Contributing
-* Fork this repo
-* Clone your repo
-* Make your changes
-* Submit a pull request
+Originally based on the Staff+ project, StaffControl has been modernized with a cleaner architecture, improved version compatibility, and a focus on long-term maintainability.
 
-#### Building
-* Clone this repo
-* Run mvn clean package
-* Wait (if you have never ran BuildTools before it will take a while future builds will be faster)
+---
+
+## Features
+
+* Staff Mode
+* Vanish System
+* Staff Chat
+* Reports & Tickets
+* Player Examination Tools
+* Teleportation Utilities
+* Staff Counter & Online Monitoring
+* Configurable Alerts
+* Multi-language Support
+* Extensive Configuration Options
+* Modular Architecture
+* Multi-Version Compatibility
+
+## Supported Versions
+
+StaffControl includes compatibility layers for multiple Minecraft versions.
+
+Current repository support:
+
+| Distribution | Versions | Java | JAR |
+|---|---|---|---|
+| **Staff+** (legacy) | 1.7.x – 1.16.x | 8 | `Staff+.jar` |
+| **StaffControl** (moderno) | 1.17+ | 17+ | `StaffControl.jar` |
+
+Modern compatibility work is developed on the `feat/v1_17-plus-module` branch.
+
+## Project Structure
+
+| Module | Description | JDK |
+|---|---|---|
+| `StaffPlusAPI` | Legacy API (`net.shortninja.staffplus`) — frozen | 8 |
+| `staff-api` | Shared API (`xyz.bt31.staffcontrol.api`) | 8 |
+| `StaffPlusCore` | Legacy core — needs CraftBukkit, frozen | 8 |
+| `v1_17_plus` | NMS-free adapter — frozen | 16 |
+| `staff-modern-core` | Modern core (Paper 1.17+) | 17+ |
+
+## Building
+
+### Requirements
+
+* Java 8+ (legacy) or Java 17+ (modern)
+* Maven
+
+### Modern distribution (StaffControl)
+
+```bash
+mvn clean package -pl staff-api,staff-modern-core -am
+```
+
+The final shaded jar will be at:
+
+```text
+staff-modern-core/target/StaffControl.jar
+```
+
+### Legacy distribution (Staff+)
+
+```bash
+bash install-dependencies.sh   # one-time only
+mvn clean package
+```
+
+The final shaded jar will be at:
+
+```text
+StaffPlusCore/target/Staff+.jar
+```
+
+### First-Time Setup (legacy only)
+
+Some legacy Spigot/CraftBukkit artifacts are not available from public Maven repositories.
+
+Install dependencies using:
+
+```bash
+bash install-dependencies.sh
+```
+
+or build the required Spigot version locally using BuildTools.
+
+## Quick Start (StaffControl)
+
+1. Drop `StaffControl.jar` into `plugins/`
+2. Restart the server
+3. Configure `plugins/StaffControl/config.yml`
+
+### Permissions
+
+| Permission | Description | Default |
+|---|---|---|
+| `staffcontrol.*` | All permissions | op |
+| `staffcontrol.vanish` | Use `/vanish` | op |
+| `staffcontrol.freeze` | Use `/freeze` | op |
+| `staffcontrol.report` | Use `/report` | true |
+| `staffcontrol.warn` | Use `/warn` | op |
+| `staffcontrol.staff` | Use `/staff` | op |
+| `staffcontrol.reload` | Reload config | op |
+| `staffcontrol.alerts` | Receive alerts | op |
+| `staffcontrol.reports.receive` | Receive report notifications | op |
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test your changes
+5. Open a Pull Request
+
+## Reporting Issues
+
+If you encounter a bug or have a feature request, please open an issue in the GitHub issue tracker.
+
+## License
+
+This project is released under the terms of the included LICENSE file.
