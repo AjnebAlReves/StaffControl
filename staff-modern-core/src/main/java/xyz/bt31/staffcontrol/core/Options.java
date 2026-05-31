@@ -18,6 +18,7 @@ public class Options implements IOptions {
     private final String mysqlUsername;
     private final String mysqlPassword;
 
+    private final String lang;
     private final boolean vanishOnJoin;
     private final boolean alertXray;
     private final boolean alertMention;
@@ -36,6 +37,7 @@ public class Options implements IOptions {
         mysqlUsername = config.getString("storage.mysql.username", "root");
         mysqlPassword = config.getString("storage.mysql.password", "");
 
+        lang = config.getString("lang", "en");
         vanishOnJoin = config.getBoolean("vanish.on-join", false);
         alertXray = config.getBoolean("alerts.xray", true);
         alertMention = config.getBoolean("alerts.mention", true);
@@ -69,6 +71,10 @@ public class Options implements IOptions {
 
     public String getMysqlPassword() {
         return mysqlPassword;
+    }
+
+    public String getLang() {
+        return lang;
     }
 
     public boolean isVanishOnJoin() {

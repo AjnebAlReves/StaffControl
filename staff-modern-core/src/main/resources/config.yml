@@ -1,3 +1,5 @@
+lang: en
+
 storage:
   type: sqlite
   sqlite:

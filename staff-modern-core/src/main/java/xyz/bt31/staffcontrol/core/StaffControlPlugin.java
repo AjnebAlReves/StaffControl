@@ -13,6 +13,7 @@ public class StaffControlPlugin extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         instance = new StaffControl(this);
+        instance.getLang().load();
 
         getServer().getPluginManager().registerEvents(
             new PlayerJoinListener(instance, instance.getUserManager()), this);
@@ -21,6 +22,7 @@ public class StaffControlPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(
             new ChatAlertListener(instance), this);
 
+        instance.getLang().sendWithPrefix(getServer().getConsoleSender(), "reload-complete");
         getLogger().info("StaffControl v" + getDescription().getVersion() + " enabled");
     }
 
